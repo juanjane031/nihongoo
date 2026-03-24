@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日語語感工房</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Serif+TC:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #f5f3ef;
+    --surface:   #edeae4;
+    --border:    #dcd8d0;
+    --muted:     #b8b2a7;
+    --body:      #5c5650;
+    --heading:   #3a3530;
+    --accent:    #8c7b6b;
+    --accent2:   #7a8c7b;
+    --accent3:   #6b7a8c;
+    --pill-bg:   #e8e4de;
+    --pill-act:  #3a3530;
+    --pill-txt:  #5c5650;
+    --pill-atxt: #f5f3ef;
+    --tag-n3:    #c4b49a;
+    --tag-n2:    #9aabb4;
+    --tag-n1:    #a49ab4;
+    --shadow:    rgba(58,53,48,0.08);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--body);
+    font-family: 'Noto Serif TC', 'Noto Serif JP', serif;
+    font-weight: 300;
+    line-height: 1.9;
+    min-height: 100vh;
+  }
+
+  /* ─── Layout ─── */
+  header {
+    padding: 3.5rem 0 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: .8rem;
+    letter-spacing: .25em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: .6rem;
+  }
+  h1 {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 300;
+    font-size: 1.7rem;
+    color: var(--heading);
+    letter-spacing: .15em;
+  }
+  .tagline {
+    margin-top: .5rem;
+    font-size: .78rem;
+    color: var(--muted);
+    letter-spacing: .12em;
+  }
+
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 4rem 2rem 6rem;
+  }
+
+  section { margin-bottom: 5rem; }
+
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: .72rem;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ─── Pill Toggle ─── */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .pill-group {
+    display: flex;
+    background: var(--pill-bg);
+    border-radius: 100px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .pill {
+    border: none;
+    background: transparent;
+    border-radius: 100px;
+    padding: .35rem .9rem;
+    font-size: .75rem;
+    letter-spacing: .1em;
+    color: var(--pill-txt);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .2s, color .2s;
+  }
+  .pill.active {
+    background: var(--pill-act);
+    color: var(--pill-atxt);
+  }
+
+  .level-badge {
+    font-size: .68rem;
+    letter-spacing: .12em;
+    padding: .2rem .7rem;
+    border-radius: 100px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+  .n3 { background: rgba(196,180,154,.25); color: #7a6a50; }
+  .n2 { background: rgba(154,171,180,.25); color: #4a6070; }
+  .n1 { background: rgba(164,154,180,.25); color: #5a4a70; }
+
+  /* ─── Reading Card ─── */
+  .reading-card {
+    background: #faf9f6;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2.4rem 2.8rem;
+    margin-bottom: 1.2rem;
+    position: relative;
+    box-shadow: 0 2px 20px var(--shadow);
+  }
+
+  .passage-selector {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .passage-btn {
+    border: 1px solid var(--border);
+    background: transparent;
+    border-radius: 3px;
+    padding: .3rem .8rem;
+    font-size: .72rem;
+    font-family: 'Noto Serif JP', serif;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: .05em;
+  }
+  .passage-btn.active, .passage-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .text-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.08rem;
+    line-height: 2.1;
+    color: var(--heading);
+    letter-spacing: .04em;
+  }
+  .text-kana {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1rem;
+    line-height: 2.3;
+    color: var(--heading);
+  }
+  .text-zh {
+    font-family: 'Noto Serif TC', serif;
+    font-size: .95rem;
+    line-height: 2;
+    color: var(--body);
+    border-left: 2px solid var(--border);
+    padding-left: 1.2rem;
+    font-style: italic;
+  }
+
+  ruby rt {
+    font-size: .55em;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .word-highlight {
+    border-bottom: 1px dotted var(--accent);
+    cursor: help;
+    position: relative;
+  }
+
+  .passage-note {
+    margin-top: 1.5rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border);
+    font-size: .78rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  .passage-note strong { color: var(--accent); font-weight: 400; }
+
+  /* ─── Daily Nuance ─── */
+  .nuance-card {
+    background: #faf9f6;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 20px var(--shadow);
+  }
+  .nuance-header {
+    background: var(--surface);
+    padding: 1rem 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .nuance-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: .78rem;
+    color: var(--muted);
+    letter-spacing: .15em;
+  }
+  .nuance-refresh {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: .85rem;
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    font-family: inherit;
+    font-size: .72rem;
+    letter-spacing: .1em;
+    transition: color .2s;
+  }
+  .nuance-refresh:hover { color: var(--accent); }
+
+  .nuance-body { padding: 2rem 1.8rem; }
+
+  .nuance-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 1.8rem;
+  }
+  @media (max-width: 520px) { .nuance-pair { grid-template-columns: 1fr; } }
+
+  .nuance-item {
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1.2rem 1.3rem;
+    position: relative;
+  }
+  .nuance-item.a { border-top: 2px solid var(--accent); }
+  .nuance-item.b { border-top: 2px solid var(--accent2); }
+
+  .nuance-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.1rem;
+    color: var(--heading);
+    margin-bottom: .4rem;
+    letter-spacing: .05em;
+  }
+  .nuance-zh {
+    font-size: .78rem;
+    color: var(--muted);
+    margin-bottom: .7rem;
+  }
+  .nuance-tag {
+    display: inline-block;
+    font-size: .65rem;
+    letter-spacing: .12em;
+    padding: .15rem .55rem;
+    border-radius: 100px;
+    background: var(--pill-bg);
+    color: var(--muted);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+
+  .nuance-analysis {
+    background: var(--surface);
+    border-radius: 3px;
+    padding: 1.2rem 1.4rem;
+    font-size: .82rem;
+    line-height: 1.9;
+    color: var(--body);
+  }
+  .nuance-analysis p + p { margin-top: .8rem; }
+  .nuance-key {
+    display: inline;
+    background: rgba(140,123,107,.12);
+    padding: .1rem .3rem;
+    border-radius: 2px;
+    font-family: 'Noto Serif JP', serif;
+    color: var(--heading);
+    font-size: .9em;
+  }
+  .nuance-verdict {
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: .78rem;
+    color: var(--accent);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: .9rem;
+    letter-spacing: .05em;
+  }
+
+  /* ─── Footer ─── */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    font-size: .7rem;
+    color: var(--muted);
+    letter-spacing: .15em;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+
+  /* ─── Transitions ─── */
+  .text-block {
+    transition: opacity .25s ease;
+  }
+  .text-block.fade {
+    opacity: 0;
+  }
+
+  .spin {
+    display: inline-block;
+    animation: spin .5s ease;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-en">Nihongo Kōbō</div>
+  <h1>日語語感工房</h1>
+  <div class="tagline">N3 → N1 ・ 讀文・語感・細節</div>
+</header>
+
+<main>
+
+  <!-- ══ Section 1: Reading ══ -->
+  <section id="reader">
+    <div class="section-label">閱讀練習 Reading</div>
+
+    <div class="toggle-row">
+      <div class="pill-group" id="modeToggle">
+        <button class="pill active" data-mode="kanji">漢字</button>
+        <button class="pill" data-mode="kana">平假名</button>
+        <button class="pill" data-mode="zh">中文</button>
+      </div>
+    </div>
+
+    <div class="reading-card">
+      <div class="passage-selector" id="passageSel"></div>
+      <div class="text-block" id="textDisplay"></div>
+      <div class="passage-note" id="passageNote"></div>
+    </div>
+  </section>
+
+  <!-- ══ Section 2: Daily Nuance ══ -->
+  <section id="nuance">
+    <div class="section-label">每日語感 Daily Nuance</div>
+    <div class="nuance-card">
+      <div class="nuance-header">
+        <span class="nuance-date" id="nuanceDate"></span>
+        <button class="nuance-refresh" id="refreshBtn">↻ &nbsp;換一組</button>
+      </div>
+      <div class="nuance-body" id="nuanceBody"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>手工設計・精心策劃 &nbsp;／&nbsp; for the devoted learner</footer>
+
+<script>
+// ══════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════
+
+const passages = [
+  {
+    id: 0,
+    title: '桜の季節',
+    level: 'n3',
+    kanji: `今年も桜の季節がやってきた。公園のベンチに座って、風に舞う花びらを眺めながら、ふと去年のことを思い出した。あの頃はまだ慌ただしい毎日だったが、今はこうしてゆっくりと時間が流れている。桜は儚いからこそ、美しいのかもしれない。`,
+    kana: `ことしも さくらの きせつが やってきた。こうえんの ベンチに すわって、かぜに まう はなびらを ながめながら、ふと きょねんの ことを おもいだした。あのころは まだ あわただしい まいにちだったが、いまは こうして ゆっくりと じかんが ながれている。さくらは はかないから こそ、うつくしいのかも しれない。`,
+    zh: `今年，櫻花的季節又來臨了。坐在公園的長椅上，凝望著隨風飛舞的花瓣，不禁想起了去年的事。那時的每一天還是如此忙碌，而如今時光就這樣緩緩流逝。正因為櫻花如此短暫，或許才顯得如此美麗吧。`,
+    note: `<strong>ふと</strong>：突然、不經意地（副詞，常與「思い出した」「気づいた」搭配）<br><strong>〜からこそ</strong>：正因為〜（強調原因，語氣比「〜から」更有說服力）<br><strong>かもしれない</strong>：也許、或許（N3 核心表達，語氣柔和）`
+  },
+  {
+    id: 1,
+    title: '締め切りの前夜',
+    level: 'n2',
+    kanji: `締め切りは明日の朝なのに、画面を前にして指が動かない。焦れば焦るほど言葉が出てこないのは、どうしたことだろう。気分転換にコーヒーを淹れ、窓の外をぼんやり眺めていると、隣の部屋から子供の笑い声が聞こえてきた。その無邪気な声に、肩の力がすっと抜けた気がした。`,
+    kana: `しめきりは あしたの あさなのに、がめんを まえにして ゆびが うごかない。あせれば あせるほど ことばが でてこないのは、どうした ことだろう。きぶん てんかんに コーヒーを いれ、まどの そとを ぼんやり ながめていると、となりの へやから こどもの わらいごえが きこえてきた。その むじゃきな こえに、かたの ちからが すっと ぬけた きがした。`,
+    zh: `明明截止日是明天早上，坐在螢幕前手指卻動不了。越是著急，腦中越是一片空白，這究竟是怎麼回事。泡了杯咖啡轉換心情，漫無目的地望著窗外，這時隔壁房間傳來了孩子的笑聲。那純真的聲音，讓我感覺肩膀上的力氣霎時消散了。`,
+    note: `<strong>〜ば〜ほど</strong>：越〜越〜（N2 文法，表示成比例的變化）<br><strong>ぼんやり</strong>：漫無目的、模糊地（副詞，常描述視線或思緒飄散的狀態）<br><strong>すっと</strong>：倏地、輕快地（擬態語，表示一瞬間的輕盈感）`
+  },
+  {
+    id: 2,
+    title: '余白の哲学',
+    level: 'n1',
+    kanji: `日本の美意識において、「余白」は単なる空白ではなく、意味を孕んだ沈黙である。書においても庭においても、描かれていない部分が語るものの重さは、時として描かれた部分を凌ぐ。この逆説を体得することなしに、日本語の文章を書くことはできないと言っても過言ではあるまい。`,
+    kana: `にほんの びいしきにおいて、「よはく」は たんなる くうはくではなく、いみを はらんだ ちんもくである。しょにおいても にわにおいても、えがかれていない ぶぶんが かたるものの おもさは、ときとして えがかれた ぶぶんを しのぐ。この ぎゃくせつを たいとくすること なしに、にほんごの ぶんしょうを かくことは できないと いっても かごんでは あるまい。`,
+    zh: `在日本的美學意識中，「留白」並非單純的空白，而是蘊含意義的沉默。無論是書法還是庭園，未被描繪的部分所訴說之物的份量，有時甚至凌駕於已被描繪的部分。若說不親身領悟這一悖論，便無法寫出日語文章，也並不為過。`,
+    note: `<strong>意味を孕む</strong>：蘊含意義（「孕む」本義為懷孕，引申為「潛藏、蘊含」，N1 書面語）<br><strong>〜を凌ぐ</strong>：凌駕、超越（正式書面語，帶有壓倒性的語感）<br><strong>〜と言っても過言ではあるまい</strong>：說〜也不為過（N1 典型表達，「あるまい」為「ないだろう」的書面形式）`
+  }
+];
+
+const nuances = [
+  {
+    a: { jp: 'やはり、そうだったか。', zh: '果然是這樣啊。', tag: '確認・滿足' },
+    b: { jp: 'やっぱり、そうだったか。', zh: '果然是這樣啊。', tag: '確認・情緒化' },
+    analysis: `<p>兩者都表示「果然」，但語感截然不同。<span class="nuance-key">やはり</span> 語氣沉穩、帶有一種冷靜確認的距離感，常見於書面語或正式場合；說話者像是早有預感，此刻得到了驗證。</p>
+    <p><span class="nuance-key">やっぱり</span> 則更口語、更情緒化，帶有「早就知道了吧！」的語氣，有時夾雜著輕微的驚訝或感嘆。用在朋友間的對話最自然。</p>`,
+    verdict: '書面沉著用やはり，口語感嘆用やっぱり。'
+  },
+  {
+    a: { jp: '少し待ってください。', zh: '請稍等一下。', tag: '禮貌・中性' },
+    b: { jp: 'ちょっと待ってください。', zh: '請稍等一下。', tag: '口語・輕柔' },
+    analysis: `<p><span class="nuance-key">少し</span> 是「稍微、少量」的量化概念，用在「少し待つ」時，給人的感覺是說話者有意識地衡量了時間。語氣中性、略帶正式。</p>
+    <p><span class="nuance-key">ちょっと</span> 語感更柔和、更隨意，有時甚至帶有一種撒嬌或客氣的緩衝感。服務業常說「ちょっとお待ちください」，比「少し」更親切自然。</p>`,
+    verdict: '正式場合用少し，軟化語氣用ちょっと。'
+  },
+  {
+    a: { jp: '彼女は美しい人だ。', zh: '她是個美麗的人。', tag: '客觀・靜態' },
+    b: { jp: '彼女はきれいな人だ。', zh: '她是個漂亮的人。', tag: '直觀・動態' },
+    analysis: `<p><span class="nuance-key">美しい</span> 偏向內在、藝術性的美，帶有欣賞、仰望的距離感，有時暗示一種超越外表的感動。用在景色、音樂、人格上都很自然。</p>
+    <p><span class="nuance-key">きれい</span> 則是直觀、整潔的美感，偏重視覺的第一印象。也能表示「乾淨」（部屋がきれい），語義更廣但更日常化。</p>`,
+    verdict: '精神性的美用美しい，視覺直觀的美用きれい。'
+  },
+  {
+    a: { jp: '疲れたので、もう帰ります。', zh: '因為累了，我要回去了。', tag: '因果・直接' },
+    b: { jp: '疲れたし、もう帰ります。', zh: '（我累了，）我要回去了。', tag: '列舉・柔化' },
+    analysis: `<p><span class="nuance-key">〜ので</span> 表示客觀的因果關係，語氣直接，聽者會感受到「理由充分，所以我要走」的邏輯性。較正式，有時略帶強迫性。</p>
+    <p><span class="nuance-key">〜し</span> 則是「列舉理由」的用法，語感上更柔和，像是說「這只是原因之一」，給對方留有餘地。日語母語者常用 し 代替 ので 來軟化語氣，避免太過強硬。</p>`,
+    verdict: '強調單一理由用ので，柔化語氣或列舉用し。'
+  },
+  {
+    a: { jp: '気持ちはわかります。', zh: '我明白你的感受。', tag: '理解・禮貌' },
+    b: { jp: '気持ちはわかる。', zh: '我明白你的感受。', tag: '共感・親密' },
+    analysis: `<p>語尾的差異決定了說話者與聽者的心理距離。<span class="nuance-key">わかります</span> 是禮貌體（丁寧語），帶有一種職業性的距離感，如諮詢師、客服常用。</p>
+    <p><span class="nuance-key">わかる</span> 是普通體，用在親密關係中更顯真誠，少了客氣的屏障，反而讓對方感受到真正的共情。朋友傾訴時回以「わかる、わかる」是一種溫暖的接住姿態。</p>`,
+    verdict: '正式場合保持禮貌體，親密共感時普通體更走心。'
+  },
+  {
+    a: { jp: '部長に相談してみます。', zh: '我試著去和部長商量看看。', tag: '自發・嘗試' },
+    b: { jp: '部長に相談します。', zh: '我要去和部長商量。', tag: '確定・承諾' },
+    analysis: `<p><span class="nuance-key">〜てみる</span> 的核心語感是「試著做看看」，帶有不確定結果的嘗試性，暗示說話者還沒把握，或是在探索可能性。</p>
+    <p>去掉 てみる 後，<span class="nuance-key">〜します</span> 就成了確定的承諾或意志表達。在商務場合，「相談してみます」可能讓上司覺得你沒有把握，而「相談します」則傳達了明確的行動意志。選哪個，語境決定一切。</p>`,
+    verdict: '試探性嘗試用てみる，明確承諾去掉てみる。'
+  }
+];
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let currentMode    = 'kanji';
+let currentPassage = 0;
+let currentNuance  = 0;
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+function init() {
+  buildPassageButtons();
+  renderPassage();
+  renderNuance();
+  setupToggle();
+  setupPassageSel();
+  setupRefresh();
+  setNuanceDate();
+  // daily rotation
+  currentNuance = new Date().getDate() % nuances.length;
+  renderNuance();
+}
+
+// ══════════════════════════════════════════
+//  PASSAGE
+// ══════════════════════════════════════════
+function buildPassageButtons() {
+  const sel = document.getElementById('passageSel');
+  passages.forEach((p, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'passage-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = p.title;
+    btn.dataset.idx = i;
+    sel.appendChild(btn);
+  });
+}
+
+function setupPassageSel() {
+  document.getElementById('passageSel').addEventListener('click', e => {
+    if (!e.target.matches('.passage-btn')) return;
+    document.querySelectorAll('.passage-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    currentPassage = parseInt(e.target.dataset.idx);
+    fadeRender(renderPassage);
+  });
+}
+
+function renderPassage() {
+  const p   = passages[currentPassage];
+  const el  = document.getElementById('textDisplay');
+  const note= document.getElementById('passageNote');
+
+  let html = '';
+  if (currentMode === 'kanji') {
+    html = `<p class="text-jp">${p.kanji}</p>`;
+  } else if (currentMode === 'kana') {
+    html = `<p class="text-kana">${p.kana}</p>`;
+  } else {
+    html = `<p class="text-zh">${p.zh}</p>`;
+  }
+  el.innerHTML = html;
+  note.innerHTML = p.note;
+
+  // update level badge in toggle row
+  let badge = document.getElementById('levelBadge');
+  if (!badge) {
+    badge = document.createElement('span');
+    badge.id = 'levelBadge';
+    badge.className = 'level-badge';
+    document.querySelector('.toggle-row').appendChild(badge);
+  }
+  badge.className = `level-badge ${p.level}`;
+  badge.textContent = p.level.toUpperCase();
+}
+
+// ══════════════════════════════════════════
+//  MODE TOGGLE
+// ══════════════════════════════════════════
+function setupToggle() {
+  document.getElementById('modeToggle').addEventListener('click', e => {
+    if (!e.target.matches('.pill')) return;
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    e.target.classList.add('active');
+    currentMode = e.target.dataset.mode;
+    fadeRender(renderPassage);
+  });
+}
+
+// ══════════════════════════════════════════
+//  NUANCE
+// ══════════════════════════════════════════
+function setNuanceDate() {
+  const d = new Date();
+  const opts = { year: 'numeric', month: 'long', day: 'numeric' };
+  document.getElementById('nuanceDate').textContent =
+    d.toLocaleDateString('zh-TW', opts);
+}
+
+function renderNuance() {
+  const n = nuances[currentNuance];
+  document.getElementById('nuanceBody').innerHTML = `
+    <div class="nuance-pair">
+      <div class="nuance-item a">
+        <div class="nuance-jp">${n.a.jp}</div>
+        <div class="nuance-zh">${n.a.zh}</div>
+        <span class="nuance-tag">${n.a.tag}</span>
+      </div>
+      <div class="nuance-item b">
+        <div class="nuance-jp">${n.b.jp}</div>
+        <div class="nuance-zh">${n.b.zh}</div>
+        <span class="nuance-tag">${n.b.tag}</span>
+      </div>
+    </div>
+    <div class="nuance-analysis">
+      ${n.analysis}
+      <div class="nuance-verdict">✦ &nbsp;${n.verdict}</div>
+    </div>
+  `;
+}
+
+function setupRefresh() {
+  document.getElementById('refreshBtn').addEventListener('click', () => {
+    currentNuance = (currentNuance + 1) % nuances.length;
+    const btn = document.getElementById('refreshBtn');
+    btn.querySelector('span') && btn.querySelector('span').classList.remove('spin');
+    // force reflow
+    const arrow = document.createTextNode('');
+    btn.innerHTML = '<span class="spin">↻</span> &nbsp;換一組';
+    fadeRender(renderNuance, 'nuanceBody');
+  });
+}
+
+// ══════════════════════════════════════════
+//  UTIL
+// ══════════════════════════════════════════
+function fadeRender(fn, id = 'textDisplay') {
+  const el = document.getElementById(id);
+  el.classList.add('fade');
+  setTimeout(() => {
+    fn();
+    el.classList.remove('fade');
+  }, 220);
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
